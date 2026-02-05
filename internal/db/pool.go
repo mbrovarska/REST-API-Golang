@@ -45,6 +45,12 @@ func NewPool(lc fx.Lifecycle, dbConfig DBConfig, logger *zap.Logger) (*pgxpool.P
 		zap.Int32("min_connections", config.MinConns),
 	)
 
+	//run migrations
+	if err := RunMigrations(pool, logger); err != nil {
+		pool.Close()
+		return nil, fmt.Errorf("migration failed: %w", err)
+	}
+
 	//register lifecycle hooks
 	lc.Append(fx.Hook{
 		OnStop: func(context.Context) error {
