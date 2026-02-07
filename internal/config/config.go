@@ -5,10 +5,9 @@ import (
 	"strconv"
 
 	httpserver "example.com/rest-api-notes/pkg/http-server"
-	"go.uber.org/fx"
 )
 
-var Module = fx.Provide(NewConfig)
+
 	
 	
 func NewConfig() httpserver.Config {

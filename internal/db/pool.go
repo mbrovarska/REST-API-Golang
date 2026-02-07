@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"go.uber.org/fx"
 	"go.uber.org/zap"
@@ -29,6 +30,9 @@ func NewPool(lc fx.Lifecycle, dbConfig DBConfig, logger *zap.Logger) (*pgxpool.P
 	config.MinConns = 2
 	config.MaxConnLifetime = time.Hour
 	config.MaxConnIdleTime = time.Minute * 30
+
+	// disable prepared statement cache to avoid conflicts with Squirrel
+	config.ConnConfig.DefaultQueryExecMode = pgx.QueryExecModeSimpleProtocol
 
     ctx := context.Background()
 	pool, err := pgxpool.NewWithConfig(ctx, config)
